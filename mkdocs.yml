@@ -1,5 +1,5 @@
 site_name: go-tex
-site_description: "Pure-Go TeX."
+site_description: "Pure-Go TeX that runs the real LaTeX classes — in Go and in the browser."
 site_url: https://go-tex.github.io/docs/
 repo_url: https://github.com/go-tex
 repo_name: go-tex
@@ -10,16 +10,20 @@ theme:
   logo: assets/logo.svg
   favicon: assets/logo.svg
   palette:
+    - media: "(prefers-color-scheme)"
+      primary: custom
+      accent: custom
+      toggle: { icon: material/brightness-auto, name: Switch to light mode }
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: custom
       accent: custom
-      toggle: { icon: material/weather-night, name: Dark mode }
+      toggle: { icon: material/weather-night, name: Switch to dark mode }
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: custom
       accent: custom
-      toggle: { icon: material/weather-sunny, name: Light mode }
+      toggle: { icon: material/weather-sunny, name: Switch to system preference }
   features: [navigation.sections, navigation.top, content.code.copy, search.suggest]
 
 extra_css: [stylesheets/brand.css]
@@ -39,4 +43,6 @@ nav:
   - Home: index.md
   - Packages:
       - Overview: packages/index.md
+      - engine: packages/engine.md
       - math: packages/math.md
+      - tex: packages/tex.md
