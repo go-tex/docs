@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Pure-Go TeX.">
+        <meta name="description" content="Pure-Go TeX that runs the real LaTeX classes — in Go and in the browser.">
       
       
       
@@ -130,9 +130,19 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
     
-      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
       </label>
     
@@ -140,9 +150,9 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
     
-      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
       </label>
     
@@ -324,6 +334,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fidelity-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fidelity gates
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scope-honest-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scope — honest limits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#packages" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -429,6 +472,34 @@
   
   
     <li class="md-nav__item">
+      <a href="packages/engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="packages/math/" class="md-nav__link">
         
   
@@ -437,6 +508,34 @@
     
   
     math
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="packages/tex/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    tex
   
 
     
@@ -484,6 +583,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fidelity-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fidelity gates
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scope-honest-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scope — honest limits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#packages" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -512,13 +644,84 @@
 
 
 <h1 id="go-tex">go-tex</h1>
-<p>Pure-Go TeX.</p>
-<p>go-tex is a pure-Go (CGO_ENABLED=0) TeX effort. It starts from the math component — a TeX math-mode typesetter that lays formulas out to self-contained SVG using the OpenType MATH table (metrics + vector glyph outlines via go-opentype), with no TeX engine, no cgo and no server, and compiles to js/wasm for offline client-side math preview. The full engine will follow in go-tex/tex.</p>
-<p>Everything is <strong>pure Go</strong> (<code>CGO_ENABLED=0</code>), standard-library-first, and
-cross-compiles to every 64-bit Go target. Licensed BSD-3-Clause.</p>
+<p><strong>Pure-Go TeX that runs the real LaTeX classes — in Go and in the browser.</strong></p>
+<p>go-tex is a pure-Go (<code>CGO_ENABLED=0</code>) TeX effort. Its engine is a faithful
+re-implementation of TeX — the category-code mouth and gullet, a scaled-point
+stomach, math, OpenType fonts, and PDF/SVG output — and on top of it, it <strong>loads
+and runs the genuine LaTeX classes</strong>: <code>\documentclass{article}</code>, <code>{report}</code> and
+<code>{book}</code> execute the real, embedded <code>.cls</code> files (LPPL, verbatim) — not an
+emulation — in native builds <strong>and</strong> in the browser via <code>js/wasm</code>, with no
+TeXLive and no server.</p>
+<p>A real <code>\documentclass{article}</code> document typesets a numbered title, a dotted
+<code>\tableofcontents</code>, numbered sections and subsections, <code>\chapter</code> (report/book),
+numbered figure and table captions, <code>itemize</code>/<code>enumerate</code>, and math.</p>
+<p>Everything is <strong>pure Go</strong> (<code>CGO_ENABLED=0</code>), standard-library-first, <code>go vet</code>
+clean, and cross-compiles to every 64-bit Go target as well as <code>js/wasm</code> and
+<code>wasip1/wasm</code>. Licensed BSD-3-Clause.</p>
+<h2 id="the-pipeline">The pipeline</h2>
+<p>The engine is built the way TeX parity is actually reachable — reimplement each
+stage faithfully, then gate it with an objective oracle.</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Status</th>
+<th>What it covers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mouth + gullet</td>
+<td>✅ done</td>
+<td>Category-code tokenizer, <code>eqtb</code>, macros (delimited parameters, full expansion), conditionals, registers, grouping.</td>
+</tr>
+<tr>
+<td>Stomach</td>
+<td>✅ done</td>
+<td>Box/glue/penalty model in scaled points, Knuth–Plass line breaking, a cost-based page builder, <code>\halign</code> tables.</td>
+</tr>
+<tr>
+<td>Math</td>
+<td>✅ done</td>
+<td><code>$…$</code> and display environments delegated to <a href="packages/math/"><code>go-tex/math</code></a> (vector output).</td>
+</tr>
+<tr>
+<td>Fonts</td>
+<td>✅ done</td>
+<td>OpenType via go-opentype; a built-in default font, kerning and ligatures — runs with no assets.</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>✅ done</td>
+<td>PDF (embedded subset fonts, selectable text) and self-contained SVG pages with a click-to-line source map.</td>
+</tr>
+<tr>
+<td>Real classes</td>
+<td>✅ done</td>
+<td><code>\documentclass{article\|report\|book}</code> loads and runs the genuine embedded LaTeX class, native and <code>js/wasm</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fidelity-gates">Fidelity gates</h2>
+<p>Two oracles hold the line:</p>
+<ul>
+<li>a byte-exact <strong>conformance ratchet</strong> (<code>TestConformance</code>), TeX snippets checked
+  byte-for-byte against real-TeX output; and</li>
+<li>a <strong>whole-document prose fidelity check</strong> against a real LaTeX engine
+  (<code>tectonic</code>). On a sample of real arXiv <code>article</code> papers, the real class
+  reproduces about <strong>90% (median)</strong> of the reference engine's prose words.</li>
+</ul>
+<h2 id="scope-honest-limits">Scope — honest limits</h2>
+<p>The engine <strong>loads and runs the standard base classes</strong>; it is
+functional-parity-oriented and held to real-LaTeX fidelity, <strong>not</strong> a claim of
+full TeXLive parity. <code>amsart</code> and heavy packages (<code>tikz</code>, <code>hyperref</code>, …) are not
+yet run as real files — that is the <a href="packages/engine/#roadmap">roadmap</a>, not
+done.</p>
 <h2 id="packages">Packages</h2>
 <div class="pk-grid">
-<p><a class="pk-card" href="packages/math.md"><code>math</code><br><small>TeX math-mode typesetter → SVG via the OpenType MATH table; wasm-ready for offline math preview.</small></a></p>
+<p><a class="pk-card" href="packages/engine.md"><code>engine</code><br><small>The pure-Go TeX engine — faithful mouth + gullet, scaled-point stomach, math, fonts, PDF/SVG, and the real LaTeX base classes.</small></a>
+<a class="pk-card" href="packages/math.md"><code>math</code><br><small>TeX math-mode typesetter → vector output via the OpenType MATH table; wasm-ready for offline math preview.</small></a>
+<a class="pk-card" href="packages/tex.md"><code>tex</code><br><small>A lightweight LaTeX-subset document processor → semantic HTML; wasm-ready.</small></a></p>
 </div>
 
 
