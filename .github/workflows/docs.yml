@@ -6,10 +6,17 @@ on:
     tags: ["v*"]
   pull_request:
 
+# The build needs nothing beyond the source it checks out. Write access to the
+# repository is granted to the deploy job alone, below, so a pull request build
+# cannot push to gh-pages even if a step in it misbehaves. Before this split,
+# build and deploy shared ONE job gated only at the step level, which meant the
+# pull request build really did run holding `contents: write`.
 permissions:
-  contents: write
+  contents: read
 
 jobs:
+  # Runs on every pull request as well as on main, so a change to the docs or to
+  # requirements.txt has to prove the site still builds before it lands.
   build:
     runs-on: ubuntu-latest
     steps:
@@ -20,9 +27,43 @@ jobs:
         with:
           python-version: "3.x"
       - run: pip install -r requirements.txt
+      # --strict turns a broken link or an unknown config key into a failure
+      # rather than a warning nobody reads.
       - run: mkdocs build --strict
+
+  deploy:
+    # Only a push publishes; a pull request stops after the build above. This is
+    # the same condition that used to sit on the "Configure git" step, lifted to
+    # the job, so WHAT publishes and WHEN is unchanged -- only the token the
+    # pull request build holds is.
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    # `mike deploy --push` pushes gh-pages, and two of them at once make the
+    # second fail outright with "! [rejected] gh-pages -> gh-pages (fetch
+    # first)". Pushing main and a tag together triggers exactly two runs here.
+    # cancel-in-progress stays FALSE deliberately: making a publish wait is
+    # better than killing one half way through.
+    concurrency:
+      group: gh-pages-deploy
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+      - run: pip install -r requirements.txt
+      # No artifact crosses from the build job on purpose: `mike deploy` runs
+      # `mkdocs build` itself and commits ITS OWN output to gh-pages, so the
+      # site/ the build job produced was already thrown away before this split.
+      # The build job is the gate; this job publishes, exactly as it did when
+      # both lived in one job. The site is therefore built twice on a push, and
+      # that is the price of publishing byte-for-byte the same thing as before.
       - name: Configure git
-        if: github.event_name != 'pull_request'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
