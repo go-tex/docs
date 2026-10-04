@@ -39,16 +39,30 @@ Two oracles hold the line:
 - a byte-exact **conformance ratchet** (`TestConformance`), TeX snippets checked
   byte-for-byte against real-TeX output; and
 - a **whole-document prose fidelity check** against a real LaTeX engine
-  (`tectonic`). On a sample of real arXiv `article` papers, the real class
-  reproduces about **90% (median)** of the reference engine's prose words.
+  (`tectonic`). On a corpus of **154 real arXiv papers** with a reference PDF
+  each, a vocabulary-bounded word census puts the median at **101% of the
+  reference engine's prose words** (measured 2026-10-04); **10** of the 154 fall
+  below 95% and 3 below 90%. Pagination lands on the reference exactly for
+  **37** of them, with a total page deviation of 342 over the corpus.
+
+  A median above 100% is expected rather than flattering: the engine emits each
+  formula's *source* as an invisible text layer so that maths can be found,
+  copied and read aloud, and the census counts it. The figure to watch is the
+  tail — the papers below 95% — not the median.
 
 ## Scope — honest limits
 
 The engine **loads and runs the standard base classes**; it is
 functional-parity-oriented and held to real-LaTeX fidelity, **not** a claim of
-full TeXLive parity. `amsart` and heavy packages (`tikz`, `hyperref`, …) are not
-yet run as real files — that is the [roadmap](packages/engine.md#roadmap), not
-done.
+full TeXLive parity.
+
+Four classes are embedded as genuine `.cls` files and run as real TeX —
+`article`, `report`, `book` and `amsart` — so they need no filesystem and work in
+the `js/wasm` build too. Any other resolvable `.cls` or `.sty` is loaded and run
+as real TeX as well; what is *not* resolvable falls back to
+content-preserving emulation. The heavy packages are the honest gap: TikZ/pgf
+**drawing** is gated behind `GOTEX_PGF` and still in bring-up — see the
+[roadmap](packages/engine.md#roadmap).
 
 ## Packages
 
