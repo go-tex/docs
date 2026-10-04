@@ -708,15 +708,27 @@ stage faithfully, then gate it with an objective oracle.</p>
 <li>a byte-exact <strong>conformance ratchet</strong> (<code>TestConformance</code>), TeX snippets checked
   byte-for-byte against real-TeX output; and</li>
 <li>a <strong>whole-document prose fidelity check</strong> against a real LaTeX engine
-  (<code>tectonic</code>). On a sample of real arXiv <code>article</code> papers, the real class
-  reproduces about <strong>90% (median)</strong> of the reference engine's prose words.</li>
+  (<code>tectonic</code>). On a corpus of <strong>154 real arXiv papers</strong> with a reference PDF
+  each, a vocabulary-bounded word census puts the median at <strong>101% of the
+  reference engine's prose words</strong> (measured 2026-10-04); <strong>10</strong> of the 154 fall
+  below 95% and 3 below 90%. Pagination lands on the reference exactly for
+  <strong>37</strong> of them, with a total page deviation of 342 over the corpus.</li>
 </ul>
+<p>A median above 100% is expected rather than flattering: the engine emits each
+  formula's <em>source</em> as an invisible text layer so that maths can be found,
+  copied and read aloud, and the census counts it. The figure to watch is the
+  tail — the papers below 95% — not the median.</p>
 <h2 id="scope-honest-limits">Scope — honest limits</h2>
 <p>The engine <strong>loads and runs the standard base classes</strong>; it is
 functional-parity-oriented and held to real-LaTeX fidelity, <strong>not</strong> a claim of
-full TeXLive parity. <code>amsart</code> and heavy packages (<code>tikz</code>, <code>hyperref</code>, …) are not
-yet run as real files — that is the <a href="packages/engine/#roadmap">roadmap</a>, not
-done.</p>
+full TeXLive parity.</p>
+<p>Four classes are embedded as genuine <code>.cls</code> files and run as real TeX —
+<code>article</code>, <code>report</code>, <code>book</code> and <code>amsart</code> — so they need no filesystem and work in
+the <code>js/wasm</code> build too. Any other resolvable <code>.cls</code> or <code>.sty</code> is loaded and run
+as real TeX as well; what is <em>not</em> resolvable falls back to
+content-preserving emulation. The heavy packages are the honest gap: TikZ/pgf
+<strong>drawing</strong> is gated behind <code>GOTEX_PGF</code> and still in bring-up — see the
+<a href="packages/engine/#roadmap">roadmap</a>.</p>
 <h2 id="packages">Packages</h2>
 <div class="pk-grid">
 <p><a class="pk-card" href="packages/engine.md"><code>engine</code><br><small>The pure-Go TeX engine — faithful mouth + gullet, scaled-point stomach, math, fonts, PDF/SVG, and the real LaTeX base classes.</small></a>
