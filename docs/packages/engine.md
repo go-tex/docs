@@ -39,8 +39,16 @@ Each stage is gated by an objective oracle.
 - a byte-exact **conformance ratchet** (`TestConformance`), TeX snippets checked
   byte-for-byte against real-TeX output; and
 - a **whole-document prose fidelity check** against a real LaTeX engine
-  (`tectonic`). On a sample of real arXiv `article` papers, the real class
-  reproduces about **90% (median)** of the reference engine's prose words.
+  (`tectonic`). On a corpus of **154 real arXiv papers** with a reference PDF
+  each, a vocabulary-bounded word census puts the median at **101% of the
+  reference engine's prose words** (measured 2026-10-04); **10** of the 154 fall
+  below 95% and 3 below 90%. Pagination lands on the reference exactly for
+  **37** of them, with a total page deviation of 342 over the corpus.
+
+  A median above 100% is expected rather than flattering: the engine emits each
+  formula's *source* as an invisible text layer so that maths can be found,
+  copied and read aloud, and the census counts it. The figure to watch is the
+  tail — the papers below 95% — not the median.
 
 ## Roadmap
 
@@ -48,9 +56,10 @@ The engine loads and runs the standard base classes; it is
 functional-parity-oriented and held to real-LaTeX fidelity, **not** a claim of
 full TeXLive parity.
 
-- `amsart` run as a real class (it additionally needs `amsmath`).
-- Heavy packages (`tikz`, `hyperref`, …) run as real files rather than native
-  stubs.
+- Heavy packages (`tikz`, …) run as real files rather than native stubs; TikZ/pgf
+  drawing is gated behind `GOTEX_PGF` and in bring-up.
+- Float pagination (`GOTEX_FLOATS`) and two-column reprint layouts
+  (`GOTEX_TWOCOLUMN`) out of their environment flags.
 - A broader real-document conformance corpus (PDF-diff against pdftex/xetex) and
   the TRIP test.
 
