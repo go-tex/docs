@@ -10,8 +10,9 @@ and runs the genuine LaTeX classes**: `\documentclass{article}`, `{report}` and
 emulation — in native builds **and** in the browser via `js/wasm`, with no
 TeXLive and no server.
 
-A real `\documentclass{article}` document typesets a numbered title, a dotted
-`\tableofcontents`, numbered sections and subsections, `\chapter` (report/book),
+A real `\documentclass{article}` document typesets a numbered title, a
+`\tableofcontents` shaped by the loaded class's own `\l@…` macros, numbered
+sections and subsections, `\chapter` (report/book, with its own contents entry),
 numbered figure and table captions, `itemize`/`enumerate`, and math.
 
 Everything is **pure Go** (`CGO_ENABLED=0`), standard-library-first, `go vet`
