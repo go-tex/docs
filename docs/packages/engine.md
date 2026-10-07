@@ -10,9 +10,12 @@ TeXLive and no server.
 
 - **Runs the standard base classes for real.** `article`, `report` and `book`
   load and execute the genuine embedded LaTeX `.cls` files, typesetting a
-  numbered title, a dotted `\tableofcontents`, numbered sections/subsections,
-  `\chapter` (report/book), numbered figure/table captions, `itemize`/`enumerate`,
-  and math.
+  numbered title, a `\tableofcontents` shaped by the class's own `\l@…` macros
+  (the indent and number-box widths are read out of its `\@dottedtocline` calls,
+  so `article`'s leaderless bold `\l@section` and `book`'s dotted one at the same
+  level come out differently), numbered sections/subsections, `\chapter`
+  (report/book, with its entry in the contents list and its opening page's folio
+  at the foot), numbered figure/table captions, `itemize`/`enumerate`, and math.
 - **A full pipeline.** A category-code mouth and gullet, a scaled-point stomach
   with Knuth–Plass line breaking and a cost-based page builder, `\halign` tables,
   math via [`math`](math.md) (vector output), OpenType fonts (a built-in default
