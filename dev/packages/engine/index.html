@@ -701,9 +701,12 @@ TeXLive and no server.</p>
 <ul>
 <li><strong>Runs the standard base classes for real.</strong> <code>article</code>, <code>report</code> and <code>book</code>
   load and execute the genuine embedded LaTeX <code>.cls</code> files, typesetting a
-  numbered title, a dotted <code>\tableofcontents</code>, numbered sections/subsections,
-  <code>\chapter</code> (report/book), numbered figure/table captions, <code>itemize</code>/<code>enumerate</code>,
-  and math.</li>
+  numbered title, a <code>\tableofcontents</code> shaped by the class's own <code>\l@…</code> macros
+  (the indent and number-box widths are read out of its <code>\@dottedtocline</code> calls,
+  so <code>article</code>'s leaderless bold <code>\l@section</code> and <code>book</code>'s dotted one at the same
+  level come out differently), numbered sections/subsections, <code>\chapter</code>
+  (report/book, with its entry in the contents list and its opening page's folio
+  at the foot), numbered figure/table captions, <code>itemize</code>/<code>enumerate</code>, and math.</li>
 <li><strong>A full pipeline.</strong> A category-code mouth and gullet, a scaled-point stomach
   with Knuth–Plass line breaking and a cost-based page builder, <code>\halign</code> tables,
   math via <a href="../math/"><code>math</code></a> (vector output), OpenType fonts (a built-in default

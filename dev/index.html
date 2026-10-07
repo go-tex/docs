@@ -652,8 +652,9 @@ and runs the genuine LaTeX classes</strong>: <code>\documentclass{article}</code
 <code>{book}</code> execute the real, embedded <code>.cls</code> files (LPPL, verbatim) — not an
 emulation — in native builds <strong>and</strong> in the browser via <code>js/wasm</code>, with no
 TeXLive and no server.</p>
-<p>A real <code>\documentclass{article}</code> document typesets a numbered title, a dotted
-<code>\tableofcontents</code>, numbered sections and subsections, <code>\chapter</code> (report/book),
+<p>A real <code>\documentclass{article}</code> document typesets a numbered title, a
+<code>\tableofcontents</code> shaped by the loaded class's own <code>\l@…</code> macros, numbered
+sections and subsections, <code>\chapter</code> (report/book, with its own contents entry),
 numbered figure and table captions, <code>itemize</code>/<code>enumerate</code>, and math.</p>
 <p>Everything is <strong>pure Go</strong> (<code>CGO_ENABLED=0</code>), standard-library-first, <code>go vet</code>
 clean, and cross-compiles to every 64-bit Go target as well as <code>js/wasm</code> and
