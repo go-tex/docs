@@ -1,0 +1,11 @@
+:root {
+  --md-primary-fg-color: #0079A8;
+  --md-primary-fg-color--light: #22CCE2;
+  --md-primary-fg-color--dark: #0A6E96;
+  --md-accent-fg-color: #22CCE2;
+}
+.md-header, .md-tabs { background: linear-gradient(135deg, #22CCE2, #0079A8); }
+.md-typeset h1 { color: #0079A8; font-weight: 800; }
+.pk-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
+.pk-card { border:1px solid var(--md-default-fg-color--lightest); border-radius:12px; padding:14px; }
+.pk-card code { font-size:15px; font-weight:700; }
