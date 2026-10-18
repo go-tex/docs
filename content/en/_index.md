@@ -1,4 +1,9 @@
-# go-tex
+---
+title: "Home"
+weight: 10
+---
+
+# go-tex {#go-tex}
 
 **Pure-Go TeX that runs the real LaTeX classes — in Go and in the browser.**
 
@@ -19,7 +24,7 @@ Everything is **pure Go** (`CGO_ENABLED=0`), standard-library-first, `go vet`
 clean, and cross-compiles to every 64-bit Go target as well as `js/wasm` and
 `wasip1/wasm`. Licensed BSD-3-Clause.
 
-## The pipeline
+## The pipeline {#the-pipeline}
 
 The engine is built the way TeX parity is actually reachable — reimplement each
 stage faithfully, then gate it with an objective oracle.
@@ -28,12 +33,12 @@ stage faithfully, then gate it with an objective oracle.
 |---|---|---|
 | Mouth + gullet | ✅ done | Category-code tokenizer, `eqtb`, macros (delimited parameters, full expansion), conditionals, registers, grouping. |
 | Stomach | ✅ done | Box/glue/penalty model in scaled points, Knuth–Plass line breaking, a cost-based page builder, `\halign` tables. |
-| Math | ✅ done | `$…$` and display environments delegated to [`go-tex/math`](packages/math.md) (vector output). |
+| Math | ✅ done | `$…$` and display environments delegated to [`go-tex/math`]({{< relref "packages/math.md" >}}) (vector output). |
 | Fonts | ✅ done | OpenType via go-opentype; a built-in default font, kerning and ligatures — runs with no assets. |
 | Output | ✅ done | PDF (embedded subset fonts, selectable text) and self-contained SVG pages with a click-to-line source map. |
 | Real classes | ✅ done | `\documentclass{article\|report\|book}` loads and runs the genuine embedded LaTeX class, native and `js/wasm`. |
 
-## Fidelity gates
+## Fidelity gates {#fidelity-gates}
 
 Two oracles hold the line:
 
@@ -51,7 +56,7 @@ Two oracles hold the line:
   copied and read aloud, and the census counts it. The figure to watch is the
   tail — the papers below 95% — not the median.
 
-## Scope — honest limits
+## Scope — honest limits {#scope-honest-limits}
 
 The engine **loads and runs the standard base classes**; it is
 functional-parity-oriented and held to real-LaTeX fidelity, **not** a claim of
@@ -63,12 +68,12 @@ the `js/wasm` build too. Any other resolvable `.cls` or `.sty` is loaded and run
 as real TeX as well; what is *not* resolvable falls back to
 content-preserving emulation. The heavy packages are the honest gap: TikZ/pgf
 **drawing** is gated behind `GOTEX_PGF` and still in bring-up — see the
-[roadmap](packages/engine.md#roadmap).
+[roadmap]({{< relref "packages/engine.md#roadmap" >}}).
 
-## Packages
+## Packages {#packages}
 
 <div class="pk-grid" markdown>
-<a class="pk-card" href="packages/engine.md"><code>engine</code><br><small>The pure-Go TeX engine — faithful mouth + gullet, scaled-point stomach, math, fonts, PDF/SVG, and the real LaTeX base classes.</small></a>
-<a class="pk-card" href="packages/math.md"><code>math</code><br><small>TeX math-mode typesetter → vector output via the OpenType MATH table; wasm-ready for offline math preview.</small></a>
-<a class="pk-card" href="packages/tex.md"><code>tex</code><br><small>A lightweight LaTeX-subset document processor → semantic HTML; wasm-ready.</small></a>
+<a class="pk-card" href='{{< relref "packages/engine.md" >}}'><code>engine</code><br><small>The pure-Go TeX engine — faithful mouth + gullet, scaled-point stomach, math, fonts, PDF/SVG, and the real LaTeX base classes.</small></a>
+<a class="pk-card" href='{{< relref "packages/math.md" >}}'><code>math</code><br><small>TeX math-mode typesetter → vector output via the OpenType MATH table; wasm-ready for offline math preview.</small></a>
+<a class="pk-card" href='{{< relref "packages/tex.md" >}}'><code>tex</code><br><small>A lightweight LaTeX-subset document processor → semantic HTML; wasm-ready.</small></a>
 </div>
