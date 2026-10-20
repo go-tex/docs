@@ -26,6 +26,13 @@ TeXLive and no server.
   math via [`math`]({{< relref "math.md" >}}) (vector output), OpenType fonts (a built-in default
   font, kerning, ligatures), and **PDF + SVG** output — the SVG carries a source
   map for click-to-line.
+- **Floats and two columns are the default.** Real float placement (top, bottom
+  and float-page, with the seven parameters read from the *class* rather than
+  from `article`'s) and the two-column layouts that classes set themselves
+  (revtex `reprint`, acmart `sigconf`/`sigplan`, IEEEtran) are on without a flag;
+  `GOTEX_FLOATS=0` and `GOTEX_TWOCOLUMN=0` opt back out. This page described both
+  as still behind their environment variables, which they have not been for some
+  time.
 - **In the browser.** A self-contained `js/wasm` build renders real LaTeX classes
   client-side — no TeXLive, no server.
 
@@ -50,13 +57,24 @@ Each stage is gated by an objective oracle.
   (`tectonic`). On a corpus of **154 real arXiv papers** with a reference PDF
   each, a vocabulary-bounded word census puts the median at **101% of the
   reference engine's prose words** (measured 2026-10-04); **10** of the 154 fall
-  below 95% and 3 below 90%. Pagination lands on the reference exactly for
-  **37** of them, with a total page deviation of 342 over the corpus.
+  below 95% and 3 below 90%. Pagination lands on the reference exactly for **32**
+  of them, with a total page deviation of **304** over the corpus (v0.261.0,
+  font-controlled).
 
   A median above 100% is expected rather than flattering: the engine emits each
   formula's *source* as an invisible text layer so that maths can be found,
   copied and read aloud, and the census counts it. The figure to watch is the
   tail — the papers below 95% — not the median.
+
+- a **geometry check**, which is the only one of the three that can see text
+  drawn *outside* the sheet. A block that should fill a title page used to be set
+  as one horizontal list that was never line-broken, so everything past the right
+  margin was placed off the paper — up to **x=6619pt on a 612pt page**, author
+  names, affiliations and e-mails among it. The page count cannot see that (the
+  clearest witness is 15 pages against 15), the ink count cannot (every glyph is
+  emitted) and the text layer carries the words. Measured as lines ending beyond
+  any page width this corpus uses: **49 papers at v0.260.0, 23 at v0.261.0**,
+  against a floor of **2** on the reference PDFs themselves.
 
 ## Roadmap {#roadmap}
 
@@ -66,8 +84,9 @@ full TeXLive parity.
 
 - Heavy packages (`tikz`, …) run as real files rather than native stubs; TikZ/pgf
   drawing is gated behind `GOTEX_PGF` and in bring-up.
-- Float pagination (`GOTEX_FLOATS`) and two-column reprint layouts
-  (`GOTEX_TWOCOLUMN`) out of their environment flags.
+- Front matter that still reaches past the page edge: 23 of the 154 corpus papers,
+  down from 49, with four causes closed and the remainder a different population
+  each ([engine#629](https://github.com/go-tex/engine/issues/629)).
 - A broader real-document conformance corpus (PDF-diff against pdftex/xetex) and
   the TRIP test.
 
