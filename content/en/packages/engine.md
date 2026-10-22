@@ -73,8 +73,9 @@ Each stage is gated by an objective oracle.
   names, affiliations and e-mails among it. The page count cannot see that (the
   clearest witness is 15 pages against 15), the ink count cannot (every glyph is
   emitted) and the text layer carries the words. Measured as lines ending beyond
-  any page width this corpus uses: **49 papers at v0.260.0, 23 at v0.261.0**,
-  against a floor of **2** on the reference PDFs themselves.
+  any page width this corpus uses: **49 papers at v0.260.0, 23 at v0.261.0, 22 at v0.262.0**,
+  against a floor of **2** on the reference PDFs themselves. The widest line went
+  from 6619pt at v0.260.0 to 3357pt at v0.261.0 and **1788pt** at v0.262.0.
 
 ## Roadmap {#roadmap}
 
@@ -84,9 +85,12 @@ full TeXLive parity.
 
 - Heavy packages (`tikz`, …) run as real files rather than native stubs; TikZ/pgf
   drawing is gated behind `GOTEX_PGF` and in bring-up.
-- Front matter that still reaches past the page edge: 23 of the 154 corpus papers,
-  down from 49, with four causes closed and the remainder a different population
-  each ([engine#629](https://github.com/go-tex/engine/issues/629)).
+- Front matter that still reaches past the page edge: 22 of the 154 corpus papers,
+  down from 49, with five causes closed and the remainder a different population
+  each ([engine#629](https://github.com/go-tex/engine/issues/629)). The fifth cause
+  is `\unvbox` inside a paragraph: a vbox holds finished *lines*, and handing them
+  to the line breaker glues them end to end and re-breaks the lot as one paragraph
+  (acmart writes `\noindent\unvbox\mktitle@bx`).
 - A broader real-document conformance corpus (PDF-diff against pdftex/xetex) and
   the TRIP test.
 
