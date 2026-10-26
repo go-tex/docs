@@ -43,7 +43,7 @@ Each stage is gated by an objective oracle.
 | Stage | Status | What it covers |
 |---|---|---|
 | Mouth + gullet | ✅ done | Category-code tokenizer, `eqtb`, macros (delimited parameters, full expansion), conditionals, registers, grouping. |
-| Stomach | ✅ done | Box/glue/penalty model in scaled points, Knuth–Plass line breaking, a cost-based page builder, `\halign` tables. |
+| Stomach | ✅ done | Box/glue/penalty model in scaled points, Knuth–Plass line breaking, a cost-based page builder that keeps TeX's **two** page measurements apart — `page_total`, which the break is decided on, and `page_depth`, which is not charged against the goal and is capped at `\maxdepth` — and `\halign` tables. |
 | Math | ✅ done | `$…$` and display environments delegated to [`math`]({{< relref "math.md" >}}) (vector output). |
 | Fonts | ✅ done | OpenType via go-opentype; a built-in default font, kerning and ligatures — runs with no assets. |
 | Output | ✅ done | PDF (embedded subset fonts, selectable text) and self-contained SVG pages with a click-to-line source map. |
@@ -60,6 +60,16 @@ Each stage is gated by an objective oracle.
   below 95% and 3 below 90%. Pagination lands on the reference exactly for **32**
   of them, with a total page deviation of **304** over the corpus (v0.261.0,
   font-controlled).
+
+  In the **`default`** configuration — a different measurement, not an update of
+  the one above, and the two must not be mixed — v0.263.0 lands exactly on **36**
+  of the 154 with Σ\|deviation\| **294** and a signed bias of **+72** pages. The
+  bias is where the work is: it is a one-column phenomenon
+  ([#622](https://github.com/go-tex/engine/issues/622)), and v0.263.0 took 7 pages
+  off it by keeping `page_total` and `page_depth` apart in the page builder. A page
+  whose material reached *exactly* `\textheight` had been refused over the
+  descender of its own last line, and lost a line
+  (`tex.web` 19519-19529, 19594-19599).
 
   A median above 100% is expected rather than flattering: the engine emits each
   formula's *source* as an invisible text layer so that maths can be found,
