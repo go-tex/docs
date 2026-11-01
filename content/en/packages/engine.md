@@ -33,6 +33,14 @@ TeXLive and no server.
   `GOTEX_FLOATS=0` and `GOTEX_TWOCOLUMN=0` opt back out. This page described both
   as still behind their environment variables, which they have not been for some
   time.
+- **Spacing and breaking commands behave as LaTeX's own.** `\hspace` and `\vspace`
+  take a **glue**, not a rigid length, so `\hspace{\fill}`, `\vspace{\stretch{2}}`
+  and `\hspace{1cm plus 2mm}` keep their stretch; `\fill`, `\stretch`, `\enskip`
+  and `\samepage` are defined, with `\fill` and `\stretch` at the reference's
+  *second* order of infinity. `\pagebreak`, `\nopagebreak`, `\linebreak` and
+  `\nolinebreak` contribute the penalties LaTeX gives them, the optional degree
+  `[0…4]` included. `\marginpar` reads both of its arguments instead of letting
+  them reach the page as text. (v0.263.1)
 - **In the browser.** A self-contained `js/wasm` build renders real LaTeX classes
   client-side — no TeXLive, no server.
 
@@ -76,6 +84,21 @@ Each stage is gated by an objective oracle.
   copied and read aloud, and the census counts it. The figure to watch is the
   tail — the papers below 95% — not the median.
 
+  {{< callout type="warning" >}}
+  That text layer is also why **a PDF text extractor cannot be used to check
+  mathematics** against another engine: on a formula it returns *our source*, not
+  glyph positions, so it compares two different things. Use the vector output, or
+  the engine's own box metrics, when the question is how a formula is set.
+  {{< /callout >}}
+
+  v0.263.1 is **not** measured in these terms yet. It carries the spacing and
+  breaking work described above, and the one piece of it measured on its own —
+  `\\` no longer ejecting a page in vertical mode — moved Σ\|deviation\| from 294
+  to **283**, the bias from +72 to **+59**, and the exact papers from 36 to **39**.
+  That figure belongs to *that change against its own control*, not to the release:
+  a sum assembled from separate deltas drifts, so the release's own number is left
+  blank until the release itself is swept.
+
 - a **geometry check**, which is the only one of the three that can see text
   drawn *outside* the sheet. A block that should fill a title page used to be set
   as one horizontal list that was never line-broken, so everything past the right
@@ -101,6 +124,16 @@ full TeXLive parity.
   is `\unvbox` inside a paragraph: a vbox holds finished *lines*, and handing them
   to the line breaker glues them end to end and re-breaks the lot as one paragraph
   (acmart writes `\noindent\unvbox\mktitle@bx`).
+- **Vertical infinite glue does not stretch yet.** `\vfil`, `\vfill` and `\vss` are
+  no-ops and a page is packaged at its natural height, so `\vspace{\fill}` puts
+  nothing between its neighbours: against `tectonic`, a word pushed to the bottom
+  margin lands at y=664.72 there and y=139.10 here
+  ([engine#663](https://github.com/go-tex/engine/issues/663)).
+- **`\vadjust` is not implemented**, and three LaTeX commands need it in horizontal
+  mode: `\pagebreak` (its vertical-mode form works), the vertical space of
+  `\vspace` written inside a paragraph, and the *placement* of a `\marginpar` — the
+  note's text is read and dropped rather than set in the margin
+  ([engine#665](https://github.com/go-tex/engine/issues/665)).
 - A broader real-document conformance corpus (PDF-diff against pdftex/xetex) and
   the TRIP test.
 
