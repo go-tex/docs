@@ -41,6 +41,16 @@ TeXLive and no server.
   `\nolinebreak` contribute the penalties LaTeX gives them, the optional degree
   `[0…4]` included. `\marginpar` reads both of its arguments instead of letting
   them reach the page as text. (v0.263.1)
+- **`\\` carries its star and its optional length, and `\vadjust` works.** `\\[20pt]`
+  used to typeset the five characters `[20pt]` and `\\*` a `*`; both are now scanned,
+  and the length produces the reference's 31.88pt baseline step where a bare `\\`
+  gives 11.96. `\vadjust{…}` puts vertical material written inside a paragraph into
+  the enclosing vertical list **after** the line it was written on — measured against
+  `tectonic` as a 41.84pt step against a normal 11.96 — and it is an **error** in
+  vertical mode, as TeX requires. Two commands came with it: `\pagebreak` and
+  `\nopagebreak` now work when written *on a line* and not only between paragraphs
+  (the reference makes two pages on a short first paragraph, and so do we, where we
+  made one), and `\\*` refuses a page break after its line.
 - **In the browser.** A self-contained `js/wasm` build renders real LaTeX classes
   client-side — no TeXLive, no server.
 
@@ -129,11 +139,10 @@ full TeXLive parity.
   nothing between its neighbours: against `tectonic`, a word pushed to the bottom
   margin lands at y=664.72 there and y=139.10 here
   ([engine#663](https://github.com/go-tex/engine/issues/663)).
-- **`\vadjust` is not implemented**, and three LaTeX commands need it in horizontal
-  mode: `\pagebreak` (its vertical-mode form works), the vertical space of
-  `\vspace` written inside a paragraph, and the *placement* of a `\marginpar` — the
-  note's text is read and dropped rather than set in the margin
-  ([engine#665](https://github.com/go-tex/engine/issues/665)).
+- **A `\marginpar`'s note is read but not placed in the margin.** Its arguments no
+  longer reach the page as text and the body matches the reference exactly; putting
+  the note itself out in the margin goes through LaTeX's float machinery and is still
+  to come.
 - A broader real-document conformance corpus (PDF-diff against pdftex/xetex) and
   the TRIP test.
 
