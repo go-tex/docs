@@ -166,16 +166,24 @@ full TeXLive parity.
   written by at least one paper in the 21 956-paper corpus. That is the shape of
   "not full TeXLive parity", in numbers rather than in a disclaimer
   ([engine#677](https://github.com/go-tex/engine/issues/677)). The list is a
-  *reading order*, not a defect list: a name may be covered under another, or
-  provided by a layer, and some have no definition to lack — `\do` is a placeholder
-  every caller redefines. Three of the five names at the head are not work at all:
-  `\multicolumn` (51 of the 154 measured papers) is *supported* without being
-  *defined*, `\do` (46) has no definition in `latex.ltx` either, and
-  `\@evenfoot`/`\@evenhead` (42, 41) are deliberately unread, this engine having no
-  two-sided page model. An earlier reading of the same inventory put it at **1256**
-  absent and **695** used: the difference is three asymmetries in the *reader*, each
-  of which made the engine look poorer than it is, and each found by taking three
-  names off the head and checking them by hand.
+  *reading order*, not a defect list. An earlier reading of the same inventory put it
+  at **1256** absent and **695** used: the difference is three asymmetries in the
+  *reader*, each of which made the engine look poorer than it is, and each found by
+  taking three names off the head and checking them by hand.
+
+  **Ranking the absences by corpus demand turned out to rank noise.** The first
+  **fourteen** entries are names this engine already writes down somewhere — a special
+  case in Go (`\multicolumn`, 51 of the 154 measured papers, is *supported* without
+  being *defined*), a test file of its own (`\baselinestretch`, 41), or a comment
+  saying why the name is deliberately absent (`\@evenfoot` and `\@evenhead`, 42 and
+  41: this engine has no two-sided page model). `\do` (46) is a loop hook every caller
+  `\let`s to its own action. The measurement tool now marks such a name **cited** —
+  absent as a *definition*, but already thought about — and **221** of the 642 used
+  absences are cited. Nothing is filtered: the citation is a column beside the demand,
+  because dropping a cited name would be a false *presence*, and a false presence
+  deletes work for good where a false absence costs one reading. The first absence
+  this engine writes down **nowhere at all** is `\@citea`/`\@citeb` at 18 of the 154,
+  with `\bibcite` in the same subject — the kernel's citation machinery.
 - **A footnote is laid out by its class.** The mark is whatever `\thefootnote`
   expands to, so `\renewcommand\thefootnote{\fnsymbol{footnote}}` works and a title
   block's `\thanks` comes out `∗`; and the note itself is now built by calling the
