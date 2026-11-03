@@ -181,9 +181,19 @@ full TeXLive parity.
   absent as a *definition*, but already thought about — and **221** of the 642 used
   absences are cited. Nothing is filtered: the citation is a column beside the demand,
   because dropping a cited name would be a false *presence*, and a false presence
-  deletes work for good where a false absence costs one reading. The first absence
-  this engine writes down **nowhere at all** is `\@citea`/`\@citeb` at 18 of the 154,
-  with `\bibcite` in the same subject — the kernel's citation machinery.
+  deletes work for good where a false absence costs one reading.
+
+  **The list has no safe head, and that is the useful thing it says.** The first
+  absence this engine writes down nowhere at all is `\@citea`/`\@citeb`, 18 of the
+  154 — and defining them would accomplish nothing: they are the loop variables of
+  `\@citex`, which this engine never executes, `\cite` being written in Go. A name
+  internal to a macro replaced wholesale is invisible to *both* tests, and only
+  reading the caller finds it. The defect in that neighbourhood is a real one of a
+  familiar shape — **2941 papers, 22 of the 154**, redefine the kernel's citation
+  internals and are ignored, exactly as `\footnoterule` used to be
+  ([engine#681](https://github.com/go-tex/engine/issues/681)) — but it is not the
+  one the ranking named. Every entry on this list needs its *caller* read before it
+  is believed.
 - **A footnote is laid out by its class.** The mark is whatever `\thefootnote`
   expands to, so `\renewcommand\thefootnote{\fnsymbol{footnote}}` works and a title
   block's `\thanks` comes out `∗`; and the note itself is now built by calling the
