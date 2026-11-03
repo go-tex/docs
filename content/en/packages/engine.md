@@ -109,6 +109,16 @@ Each stage is gated by an objective oracle.
   a sum assembled from separate deltas drifts, so the release's own number is left
   blank until the release itself is swept.
 
+  **v0.265.0 was swept whole**, which is the only way one of these numbers earns its
+  place: 154 documents in the `default` configuration, Σ\|deviation\| **276**, signed
+  bias **+50**, **38** exact. It is not comparable to the 294/+72/36 above, which was
+  measured at v0.263.0 on the same corpus but before the footnote work; the figures
+  that *are* comparable are its own control — the commit immediately before the last
+  of the four, which already carried the other three — at 277/+49/38. That control is
+  **not** v0.264.0, and saying so matters: v0.264.0 predates all four changes, so a
+  reader who took it for the baseline would credit this release with work three
+  earlier merges had already done.
+
 - a **geometry check**, which is the only one of the three that can see text
   drawn *outside* the sheet. A block that should fill a title page used to be set
   as one horizontal list that was never line-broken, so everything past the right
@@ -126,10 +136,13 @@ Each stage is gated by an objective oracle.
   ones being read — and they are blind by construction to anything that moves
   material *within* a page. That blindness reports such a change as "no document
   moved", which reads as *the change does nothing* when the truth is *the
-  instrument cannot see it*. Four changes measured since: 2, 25, **72** and 40 of
-  the 154 corpus documents render differently, **none** of them visible to a page
-  count, with the page-count bias unchanged throughout
-  ([engine#675](https://github.com/go-tex/engine/issues/675)). It answers *did the
+  instrument cannot see it*. Five changes measured since: 2, 25, **72**, 40 and
+  **72** of the 154 corpus documents render differently, and across all five
+  **exactly one document** moved by a page
+  ([engine#675](https://github.com/go-tex/engine/issues/675)). That one is worth the
+  sentence it takes: `2209.13121` went 36 pages to 37 against a reference of 42, so
+  Σ\|deviation\| fell 277 → 276 while the *signed* bias rose +49 → +50 — the bias rose
+  because the paper was **short**, not because anything got worse. It answers *did the
   output change*, not *is it better*: the reference's PDFs are not our SVGs, so
   there is no third hash to be right about.
 
@@ -149,19 +162,30 @@ full TeXLive parity.
   (acmart writes `\noindent\unvbox\mktitle@bx`).
 - **How far from the kernel, measured.** `latex.ltx` — the assembled LaTeX kernel
   `tectonic` itself executes — defines **1952** control sequences. This engine and
-  `go-tex/math` carry **752** of them; **1200** are absent, of which **645** are
+  `go-tex/math` carry **755** of them; **1197** are absent, of which **642** are
   written by at least one paper in the 21 956-paper corpus. That is the shape of
   "not full TeXLive parity", in numbers rather than in a disclaimer
   ([engine#677](https://github.com/go-tex/engine/issues/677)). The list is a
   *reading order*, not a defect list: a name may be covered under another, or
   provided by a layer, and some have no definition to lack — `\do` is a placeholder
-  every caller redefines.
-- **A footnote mark is set, but not placed.** The mark is now whatever
-  `\thefootnote` expands to, so `\renewcommand\thefootnote{\fnsymbol{footnote}}`
-  works and a title block's `\thanks` comes out `∗`. It is **not** yet set inside
-  `\@makefntext`'s `\hb@xt@1.8em{\hss …}` box, so its position is unchanged; and
-  `\@fnsymbol` here gives an ASCII `*` where the reference sets `*` in math mode and
-  draws U+2217.
+  every caller redefines. Three of the five names at the head are not work at all:
+  `\multicolumn` (51 of the 154 measured papers) is *supported* without being
+  *defined*, `\do` (46) has no definition in `latex.ltx` either, and
+  `\@evenfoot`/`\@evenhead` (42, 41) are deliberately unread, this engine having no
+  two-sided page model. An earlier reading of the same inventory put it at **1256**
+  absent and **695** used: the difference is three asymmetries in the *reader*, each
+  of which made the engine look poorer than it is, and each found by taking three
+  names off the head and checking them by hand.
+- **A footnote is laid out by its class.** The mark is whatever `\thefootnote`
+  expands to, so `\renewcommand\thefootnote{\fnsymbol{footnote}}` works and a title
+  block's `\thanks` comes out `∗`; and the note itself is now built by calling the
+  class's `\@makefntext` instead of placing the mark in Go, so the `1.8em` box that
+  right-aligns it (`article.cls:609-612`) is there. Before, every note's text began
+  one box-width to the left of the reference's: no box of 14.400pt existed anywhere
+  on the page, and one does now. What remains is the mark's *size*:
+  `\@textsuperscript` is the identity here, so it is set on the baseline at text size
+  where the reference raises it, and `\@fnsymbol` gives an ASCII `*` where the
+  reference sets `*` in math mode and draws U+2217.
 - **6.1pt of leftover on a page that stretches.** With vertical infinite glue now
   contributing and every page packed `exactly` to `\vsize`, `\vspace{\fill}` puts
   its word at y=658.6 against `tectonic`'s 664.7 — the remaining third of
