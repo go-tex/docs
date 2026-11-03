@@ -136,8 +136,8 @@ Each stage is gated by an objective oracle.
   ones being read — and they are blind by construction to anything that moves
   material *within* a page. That blindness reports such a change as "no document
   moved", which reads as *the change does nothing* when the truth is *the
-  instrument cannot see it*. Five changes measured since: 2, 25, **72**, 40 and
-  **72** of the 154 corpus documents render differently, and across all five
+  instrument cannot see it*. Six changes measured since: 2, 25, **72**, 40, **72**
+  and 18 of the 154 corpus documents render differently, and across all six
   **exactly one document** moved by a page
   ([engine#675](https://github.com/go-tex/engine/issues/675)). That one is worth the
   sentence it takes: `2209.13121` went 36 pages to 37 against a reference of 42, so
@@ -189,11 +189,22 @@ full TeXLive parity.
   `\@citex`, which this engine never executes, `\cite` being written in Go. A name
   internal to a macro replaced wholesale is invisible to *both* tests, and only
   reading the caller finds it. The defect in that neighbourhood is a real one of a
-  familiar shape — **2941 papers, 22 of the 154**, redefine the kernel's citation
-  internals and are ignored, exactly as `\footnoterule` used to be
-  ([engine#681](https://github.com/go-tex/engine/issues/681)) — but it is not the
-  one the ranking named. Every entry on this list needs its *caller* read before it
-  is believed.
+  familiar shape — a class's `\@biblabel` and `\@cite` were executed into the eqtb and
+  then ignored, exactly as `\footnoterule` used to be, now closed — but it is not the
+  one the ranking named. Every entry on this list needs its *caller* read before it is
+  believed.
+
+  **Walked to the end, both tables, the inventory yielded two changes the corpus can
+  see** — the footnote's layout and the citation's brackets — and nothing else. The
+  rest is error machinery, internals of macros this engine replaces in Go, and one
+  declared `\halign` limitation (`\omit`/`\span`) whose own code comment already
+  carries the measurement saying it changes nothing here: all 282 of the corpus's
+  `\halign` uses sit in files the engine substitutes rather than executes, and
+  compiling a paper that ships one never reaches the word. Those are **conformance**
+  work — they are TeX primitives, and `\halign{…\omit…}` is an abort today — but no
+  fidelity number justifies them. So the next work comes from the measured channels
+  above, not from the inventory; it stays open as a record of five ways an inventory
+  can mislead, not as a queue.
 - **A footnote is laid out by its class.** The mark is whatever `\thefootnote`
   expands to, so `\renewcommand\thefootnote{\fnsymbol{footnote}}` works and a title
   block's `\thanks` comes out `∗`; and the note itself is now built by calling the
@@ -204,6 +215,18 @@ full TeXLive parity.
   `\@textsuperscript` is the identity here, so it is set on the baseline at text size
   where the reference raises it, and `\@fnsymbol` gives an ASCII `*` where the
   reference sets `*` in math mode and draws U+2217.
+- **A citation's brackets belong to the class too.** `\@biblabel` and `\@cite` are
+  macros in the reference (`latex.ltx:13324`, `:13322`), and `article.cls:568` builds
+  the bibliography list's label by calling `\@biblabel`. They were brackets built in
+  Go, so a class's redefinition reached the eqtb — this engine runs real `.cls` files —
+  and was dropped at the point of use: a document writing `\def\@biblabel#1{<<#1>>}`
+  rendered **byte-identically** to one that did not. `22 of the 154` carry a class that
+  redefines one of the two, and since only 50 of the 154 ship a class at all, that is
+  **44 %** of the papers that bring their own; `18 of 154` render differently. `\@citex`
+  — the iteration natbib replaces by `\let`ting it — is **not** executed: exactly one
+  paper in 154 ships `natbib.sty`, and no number calls for running the real package in
+  place of the Go emulation
+  ([engine#681](https://github.com/go-tex/engine/issues/681)).
 - **6.1pt of leftover on a page that stretches.** With vertical infinite glue now
   contributing and every page packed `exactly` to `\vsize`, `\vspace{\fill}` puts
   its word at y=658.6 against `tectonic`'s 664.7 — the remaining third of
