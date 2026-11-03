@@ -120,6 +120,19 @@ Each stage is gated by an objective oracle.
   against a floor of **2** on the reference PDFs themselves. The widest line went
   from 6619pt at v0.260.0 to 3357pt at v0.261.0 and **1788pt** at v0.262.0.
 
+- a **render check**: a sha256 over the bytes of every page's SVG, so it covers
+  every coordinate on the page. Every sweep had recorded one since the beginning
+  and nothing had ever compared two, so the page-count comparisons were the only
+  ones being read — and they are blind by construction to anything that moves
+  material *within* a page. That blindness reports such a change as "no document
+  moved", which reads as *the change does nothing* when the truth is *the
+  instrument cannot see it*. Four changes measured since: 2, 25, **72** and 40 of
+  the 154 corpus documents render differently, **none** of them visible to a page
+  count, with the page-count bias unchanged throughout
+  ([engine#675](https://github.com/go-tex/engine/issues/675)). It answers *did the
+  output change*, not *is it better*: the reference's PDFs are not our SVGs, so
+  there is no third hash to be right about.
+
 ## Roadmap {#roadmap}
 
 The engine loads and runs the standard base classes; it is
@@ -134,11 +147,26 @@ full TeXLive parity.
   is `\unvbox` inside a paragraph: a vbox holds finished *lines*, and handing them
   to the line breaker glues them end to end and re-breaks the lot as one paragraph
   (acmart writes `\noindent\unvbox\mktitle@bx`).
-- **Vertical infinite glue does not stretch yet.** `\vfil`, `\vfill` and `\vss` are
-  no-ops and a page is packaged at its natural height, so `\vspace{\fill}` puts
-  nothing between its neighbours: against `tectonic`, a word pushed to the bottom
-  margin lands at y=664.72 there and y=139.10 here
-  ([engine#663](https://github.com/go-tex/engine/issues/663)).
+- **How far from the kernel, measured.** `latex.ltx` — the assembled LaTeX kernel
+  `tectonic` itself executes — defines **1952** control sequences. This engine and
+  `go-tex/math` carry **752** of them; **1200** are absent, of which **645** are
+  written by at least one paper in the 21 956-paper corpus. That is the shape of
+  "not full TeXLive parity", in numbers rather than in a disclaimer
+  ([engine#677](https://github.com/go-tex/engine/issues/677)). The list is a
+  *reading order*, not a defect list: a name may be covered under another, or
+  provided by a layer, and some have no definition to lack — `\do` is a placeholder
+  every caller redefines.
+- **A footnote mark is set, but not placed.** The mark is now whatever
+  `\thefootnote` expands to, so `\renewcommand\thefootnote{\fnsymbol{footnote}}`
+  works and a title block's `\thanks` comes out `∗`. It is **not** yet set inside
+  `\@makefntext`'s `\hb@xt@1.8em{\hss …}` box, so its position is unchanged; and
+  `\@fnsymbol` here gives an ASCII `*` where the reference sets `*` in math mode and
+  draws U+2217.
+- **6.1pt of leftover on a page that stretches.** With vertical infinite glue now
+  contributing and every page packed `exactly` to `\vsize`, `\vspace{\fill}` puts
+  its word at y=658.6 against `tectonic`'s 664.7 — the remaining third of
+  ([engine#663](https://github.com/go-tex/engine/issues/663)), which described
+  three defects under one title.
 - **A `\marginpar`'s note is read but not placed in the margin.** Its arguments no
   longer reach the page as text and the body matches the reference exactly; putting
   the note itself out in the margin goes through LaTeX's float machinery and is still
