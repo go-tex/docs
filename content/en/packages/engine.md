@@ -89,6 +89,19 @@ Each stage is gated by an objective oracle.
   descender of its own last line, and lost a line
   (`tex.web` 19519-19529, 19594-19599).
 
+  **The bias now has attributable causes rather than a shape.** They were found by
+  building documents that carry *one* ingredient and counting pages against the
+  reference: 300 one-line paragraphs, 80 prose paragraphs and 40 `\section`s all come
+  out **equal**, and it is those equalities that make the two that differ
+  attributable. 40 display equations cost a page too many — fixed in v0.267.0 — and 40
+  `itemize` blocks still do, with every height agreeing, which puts that one in the
+  page *breaking* rather than in the spacing
+  ([#685](https://github.com/go-tex/engine/issues/685)). None of these probes needs
+  two paginations to be aligned, which is why they could answer where the
+  alignment-based instruments could not: across the corpus only **6 of 154** documents
+  have a first divergence that is attributable at all, and **none** agrees with the
+  reference on every comparable page.
+
   A median above 100% is expected rather than flattering: the engine emits each
   formula's *source* as an invisible text layer so that maths can be found,
   copied and read aloud, and the census counts it. The figure to watch is the
@@ -119,6 +132,17 @@ Each stage is gated by an objective oracle.
   reader who took it for the baseline would credit this release with work three
   earlier merges had already done.
 
+  **v0.267.0 moves the figure the bias is about.** A display now chooses between the
+  long and the short pair of skips as `tex.web:22578-22585` does, and on the same
+  sweep the signed bias falls **+50 → +35** with the median absolute deviation
+  reaching **0**. Σ\|deviation\| moves only **276 → 275**, and that is the number to
+  read beside it: every document the change moved got *shorter*, by the right amount,
+  which rights the eight we set too long and worsens six we already set too short —
+  two of them from exact. The surplus glue had been cancelling a second, opposite
+  error, which is now measurable on its own
+  ([engine#683](https://github.com/go-tex/engine/issues/683)). A figure of merit that
+  improves while its own components get worse is worth printing both ways.
+
 - a **geometry check**, which is the only one of the three that can see text
   drawn *outside* the sheet. A block that should fill a title page used to be set
   as one horizontal list that was never line-broken, so everything past the right
@@ -136,13 +160,16 @@ Each stage is gated by an objective oracle.
   ones being read — and they are blind by construction to anything that moves
   material *within* a page. That blindness reports such a change as "no document
   moved", which reads as *the change does nothing* when the truth is *the
-  instrument cannot see it*. Six changes measured since: 2, 25, **72**, 40, **72**
-  and 18 of the 154 corpus documents render differently, and across all six
+  instrument cannot see it*. Seven changes measured since: 2, 25, **72**, 40, **72**,
+  18 and **73** of the 154 corpus documents render differently; across the first six
   **exactly one document** moved by a page
   ([engine#675](https://github.com/go-tex/engine/issues/675)). That one is worth the
   sentence it takes: `2209.13121` went 36 pages to 37 against a reference of 42, so
   Σ\|deviation\| fell 277 → 276 while the *signed* bias rose +49 → +50 — the bias rose
-  because the paper was **short**, not because anything got worse. It answers *did the
+  because the paper was **short**, not because anything got worse. The seventh is the
+  exception that shows what the channel is for: 73 render differently and **14** moved
+  by a page, which is the first change here whose page-count effect was worth reading
+  on its own — and even there 59 of the 73 were invisible to it. It answers *did the
   output change*, not *is it better*: the reference's PDFs are not our SVGs, so
   there is no third hash to be right about.
 
