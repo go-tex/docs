@@ -49,7 +49,13 @@ Two oracles hold the line:
   each, a vocabulary-bounded word census puts the median at **101% of the
   reference engine's prose words** (measured 2026-10-04); **10** of the 154 fall
   below 95% and 3 below 90%. Pagination lands on the reference exactly for
-  **37** of them, with a total page deviation of 342 over the corpus.
+  **46** of them, with a total absolute deviation of **273** pages over the corpus
+  and a signed bias of **−1**. The bias was +50 until the page builder stopped
+  firing a page the moment its height passed `\vsize`: TeX fires it when the excess
+  beats what the page's own glue can shrink away
+  ([engine#693](https://github.com/go-tex/engine/pull/693)). The 273 is the open
+  figure now — 65 documents too long, 43 too short
+  ([engine#695](https://github.com/go-tex/engine/issues/695)).
 
   A median above 100% is expected rather than flattering: the engine emits each
   formula's *source* as an invisible text layer so that maths can be found,

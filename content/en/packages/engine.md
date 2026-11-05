@@ -143,6 +143,49 @@ Each stage is gated by an objective oracle.
   ([engine#683](https://github.com/go-tex/engine/issues/683)). A figure of merit that
   improves while its own components get worse is worth printing both ways.
 
+  **And then the bias turned out to be one rule, which was ours and not TeX's.**
+  `build_page` never compares `page_total` to `page_goal`. It runs until the
+  contribution list is empty (`tex.web:19425-19432`) and fires the page only when a
+  **breakpoint** costs `awful_bad`, which is reached at `:19598` when
+  `page_total - page_goal > page_shrink`. A page is full when its excess beats the
+  glue it can shrink away, not when it is taller than `\vsize`. This engine's page
+  breaker carried a second rule of its own — return as soon as `page_total` crossed
+  `\vsize`, at whatever node happened to cross it — so every page whose glue could
+  have been tightened stopped one item short.
+
+  The sign had been visible for weeks without being read: `page_shrink` was
+  accumulated at every glue node and a whole branch of the badness function existed
+  for "too tall but recoverable", and **neither was ever reached**. A quantity ported
+  from the reference, maintained at every step and never consulted, is the witness of
+  an extra rule, not of a useless quantity.
+
+  Removing it broke two tests, which was the right signal rather than a reason to
+  stop: with `build_page`'s rule alone, a page that overflows with no breakpoint
+  after it never fires. `tex.web:20486-20500` is how TeX gets there — `\end` appends
+  `\hbox to \hsize{}`, `\vfill` and `\penalty-'10000000000` and runs `build_page`
+  once more, so the last page is decided at a real breakpoint like every other. With
+  that rule in, both tests pass again **with their original expectations**: it
+  reproduces the old answer everywhere the old answer was right and differs only
+  where there is shrink to spend.
+
+  On the same sweep: signed bias **+35 → −1**, exact papers **39 → 46**,
+  Σ\|deviation\| 275 → **273**
+  ([engine#693](https://github.com/go-tex/engine/pull/693)). Σ moving by two while
+  the bias moves by thirty-six means documents moved in both directions, and they
+  did: of the 24 that moved, sixteen improved and **seven got worse**, two of them
+  from exact. Every one of those seven is a document we already set *shorter* than
+  the reference, which is now the open figure
+  ([engine#695](https://github.com/go-tex/engine/issues/695)).
+
+  **What that bias had been paying for.** Three changes transcribed faithfully from
+  `latex.ltx` had been measured as regressions against it — `\addpenalty` on lists,
+  `\addvspace`, and the sectioning penalties — and all three are *negative*
+  penalties, so all three shortened documents and all three scored against a baseline
+  that was 35 pages too long. Re-measured on the corrected builder, `\addvspace`
+  gives the **same −8** it always gave: it read as a gain of 8 at +35 and reads as a
+  loss of 8 at −1. It never moved anything toward the reference. While a baseline
+  carries a bias, every change that shares its direction is paid for it.
+
 - a **geometry check**, which is the only one of the three that can see text
   drawn *outside* the sheet. A block that should fill a title page used to be set
   as one horizontal list that was never line-broken, so everything past the right
