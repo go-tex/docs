@@ -63,7 +63,7 @@ Each stage is gated by an objective oracle.
 | Mouth + gullet | ✅ done | Category-code tokenizer, `eqtb`, macros (delimited parameters, full expansion), conditionals, registers, grouping. |
 | Stomach | ✅ done | Box/glue/penalty model in scaled points, Knuth–Plass line breaking, a cost-based page builder that keeps TeX's **two** page measurements apart — `page_total`, which the break is decided on, and `page_depth`, which is not charged against the goal and is capped at `\maxdepth` — and `\halign` tables. |
 | Math | ✅ done | `$…$` and display environments delegated to [`math`]({{< relref "math.md" >}}) (vector output). |
-| Fonts | ✅ done | OpenType via go-opentype; a built-in default font, kerning and ligatures — runs with no assets. |
+| Fonts | ✅ done | OpenType via go-opentype; a built-in default font, kerning and ligatures — runs with no assets. The size ladder is the class's own table to the point: all ten of `\tiny`…`\Huge` match tectonic, including `\Large` 14.4, `\LARGE` 17.28 and `\huge` 20.74. |
 | Output | ✅ done | PDF (embedded subset fonts, selectable text) and self-contained SVG pages with a click-to-line source map. |
 | Real classes | ✅ done | `\documentclass{article\|report\|book}` loads and runs the genuine embedded LaTeX class, native and `js/wasm`. |
 
@@ -186,6 +186,32 @@ Each stage is gated by an objective oracle.
   loss of 8 at −1. It never moved anything toward the reference. While a baseline
   carries a bias, every change that shares its direction is paid for it.
 
+  **v0.271.0: Σ\|deviation\| 273 → 272, exact 46 → 47, signed bias −1 → −12.** Twelve
+  merges, and the bias is where they show: `\vspace*` restoring `\prevdepth`
+  ([#706](https://github.com/go-tex/engine/pull/706)), `\splitmaxdepth` and
+  `\boxmaxdepth` at `\maxdimen` ([#702](https://github.com/go-tex/engine/pull/702)),
+  a forced break that does not get to choose on an already-overfull page
+  ([#701](https://github.com/go-tex/engine/pull/701)).
+
+  **And most of that release is invisible to these three numbers.** They count
+  **pages**. A kern, or a heading set at 14.4pt instead of 14, moves glyphs inside a
+  line and costs a page only when it tips one. Measured with `hashdiff`, which hashes
+  the rendered page instead of counting it:
+
+  | change | renders that differ | movement in Σ |
+  |---|---|---|
+  | GPOS kerning accumulates ([#715](https://github.com/go-tex/engine/pull/715)) | 2 of 154 | **0** |
+  | the size ladder is exact ([#718](https://github.com/go-tex/engine/pull/718)) | **124 of 154** | **0** |
+  | an `[11pt]` class at 10.95 ([#719](https://github.com/go-tex/engine/pull/719)) | 22 of 154 | −1, one document to exact |
+
+  124 of 154 is 81 % of the corpus rendering differently while the barometer does not
+  flicker. The witness for those changes is the oracle — `\hbox{AV}` at 10pt in
+  Libertinus measured 13.47pt against XeTeX's 12.35pt and now measures 12.35pt; the
+  whole `\tiny`…`\Huge` ladder read out of the PDF's own `Tf` matches tectonic
+  entry for entry. The tool that sees this already existed and says so itself; what
+  was missing is that the routine sweep does not run it
+  ([engine#716](https://github.com/go-tex/engine/issues/716)).
+
 - a **geometry check**, which is the only one of the three that can see text
   drawn *outside* the sheet. A block that should fill a title page used to be set
   as one horizontal list that was never line-broken, so everything past the right
@@ -297,6 +323,24 @@ full TeXLive parity.
   paper in 154 ships `natbib.sty`, and no number calls for running the real package in
   place of the Go emulation
   ([engine#681](https://github.com/go-tex/engine/issues/681)).
+
+  **⛔ That last clause was wrong, and the number that refutes it is a different
+  count.** "One paper ships `natbib.sty`" is about papers that carry the file.
+  `20 of the 154` **`\usepackage{natbib}`**, and *none of those twenty ships it* —
+  so all twenty fall back to the Go emulation, where `\citet` loses the author name
+  outright: "obtained by [27]" where LaTeX writes "obtained by Nordbotten et al.
+  [27]". Rendering one of them with the real package on the search path changes 285
+  diff lines. A measured claim can be true and still answer a question nobody asked;
+  this one counted *shipping* when the thing that matters is *loading*.
+
+  The engine can now run the real package: `\@auxout` was `\def\@auxout{-1}`, a
+  number no `\openout` ever opens, so everything natbib wrote to the `.aux` went
+  nowhere. With it a real stream carried across passes
+  ([engine#712](https://github.com/go-tex/engine/pull/712)), `\citep`/`\citet` in
+  `authoryear` mode produce word for word what `tectonic` produces, with no
+  undefined commands skipped. What is left is *reaching* the file
+  ([engine#703](https://github.com/go-tex/engine/issues/703)): CTAN ships natbib as
+  docstrip source with no `natbib.sty` in the archive and no `.tds.zip` at all.
 - **6.1pt of leftover on a page that stretches.** With vertical infinite glue now
   contributing and every page packed `exactly` to `\vsize`, `\vspace{\fill}` puts
   its word at y=658.6 against `tectonic`'s 664.7 — the remaining third of
