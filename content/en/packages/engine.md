@@ -203,6 +203,7 @@ Each stage is gated by an objective oracle.
   | GPOS kerning accumulates ([#715](https://github.com/go-tex/engine/pull/715)) | 2 of 154 | **0** |
   | the size ladder is exact ([#718](https://github.com/go-tex/engine/pull/718)) | **124 of 154** | **0** |
   | an `[11pt]` class at 10.95 ([#719](https://github.com/go-tex/engine/pull/719)) | 22 of 154 | −1, one document to exact |
+  | running heads get their marks ([#729](https://github.com/go-tex/engine/pull/729)) | 6 of 154 | **0**, at identical page counts |
 
   124 of 154 is 81 % of the corpus rendering differently while the barometer does not
   flicker. The witness for those changes is the oracle — `\hbox{AV}` at 10pt in
@@ -211,6 +212,36 @@ Each stage is gated by an objective oracle.
   entry for entry. The tool that sees this already existed and says so itself; what
   was missing is that the routine sweep does not run it
   ([engine#716](https://github.com/go-tex/engine/issues/716)).
+
+  **Running heads are the clearest case of a change this barometer cannot report.**
+  A page's head is produced by `\mark`, and `\mark` is a *node*: TeX carries the
+  material to the output routine and `fire_up` derives the three quantities a head
+  is written from (`tex.web:19718-19729`, `:19782-19789`) — `\topmark` is the
+  previous page's `\botmark`, `\firstmark` is this page's first mark or else
+  `\topmark`, and `\botmark` is this page's last mark and is **not** cleared on a
+  page that carries none, which is what makes a head persist across a chapter. On
+  top of that `latex.ltx` keeps the left/right pair in one token list,
+  `\@themark` (`ltpage.dtx:355`), with `\leftmark` and `\rightmark` reading
+  `\botmark` and `\firstmark` through `\@firstoftwo`/`\@secondoftwo`
+  (`:167-174`, `:341-342`) — and `\@markright` deliberately keeps the left half,
+  which is why `\markright` in a `\section` does not erase the chapter.
+
+  The effect: **27 of the 128 corpus papers that have a reference PDF now get the
+  head they had been missing**, and the whole change moves Σ\|deviation\| by
+  **zero**, because a head replaces blank space in a running header that was
+  already reserved. Only a per-page hash sees it.
+
+  {{< callout type="warning" >}}
+  **It took four fixes, three of them correct and insufficient.** A one-line
+  substrate stub, `\def\mark#1{}`, silently discarded its argument and sat one
+  layer *below* all three — so each correct fix above it changed nothing
+  observable and each looked wrong. What found it was not a better fix but a
+  different question: a test that asks whether the **node arrives**, rather than
+  whether the layer that emits it is right
+  ([engine#426](https://github.com/go-tex/engine/issues/426),
+  [engine#729](https://github.com/go-tex/engine/pull/729)). Any stub that
+  *accepts* input and drops it will outlive every repair made above it.
+  {{< /callout >}}
 
 - a **geometry check**, which is the only one of the three that can see text
   drawn *outside* the sheet. A block that should fill a title page used to be set
