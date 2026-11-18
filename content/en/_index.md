@@ -31,7 +31,7 @@ stage faithfully, then gate it with an objective oracle.
 
 | Stage | Status | What it covers |
 |---|---|---|
-| Mouth + gullet | ✅ done | Category-code tokenizer, `eqtb`, macros (delimited parameters, full expansion), conditionals, registers, grouping. |
+| Mouth + gullet | ✅ done | Category-code tokenizer, `eqtb`, macros (delimited parameters, full expansion), conditionals, grouping, and **eTeX's register file** — 32768 registers of each kind, not TeX82's 256. |
 | Stomach | ✅ done | Box/glue/penalty model in scaled points, Knuth–Plass line breaking, a cost-based page builder, `\halign` tables. |
 | Math | ✅ done | `$…$` and display environments delegated to [`go-tex/math`]({{< relref "packages/math.md" >}}) (vector output). |
 | Fonts | ✅ done | OpenType via go-opentype; a built-in default font, kerning and ligatures — runs with no assets. |
