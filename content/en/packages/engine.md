@@ -60,7 +60,7 @@ Each stage is gated by an objective oracle.
 
 | Stage | Status | What it covers |
 |---|---|---|
-| Mouth + gullet | ✅ done | Category-code tokenizer, `eqtb`, macros (delimited parameters, full expansion), conditionals, registers, grouping. |
+| Mouth + gullet | ✅ done | Category-code tokenizer, `eqtb`, macros (delimited parameters, full expansion), conditionals, grouping, and **eTeX's register file** — 32768 `\count`, `\dimen`, `\skip` and `\box` registers of each kind, not TeX82's 256. The difference is not academic: the real `tikz` and `calc` together leave 86 of 256 `\count` free, and a package-heavy paper spends those before its own `\newtheorem` counters are declared. |
 | Stomach | ✅ done | Box/glue/penalty model in scaled points, Knuth–Plass line breaking, a cost-based page builder that keeps TeX's **two** page measurements apart — `page_total`, which the break is decided on, and `page_depth`, which is not charged against the goal and is capped at `\maxdepth` — and `\halign` tables. |
 | Math | ✅ done | `$…$` and display environments delegated to [`math`]({{< relref "math.md" >}}) (vector output). |
 | Fonts | ✅ done | OpenType via go-opentype; a built-in default font, kerning and ligatures — runs with no assets. The size ladder is the class's own table to the point: all ten of `\tiny`…`\Huge` match tectonic, including `\Large` 14.4, `\LARGE` 17.28 and `\huge` 20.74. |
