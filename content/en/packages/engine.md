@@ -51,6 +51,13 @@ TeXLive and no server.
   `\nopagebreak` now work when written *on a line* and not only between paragraphs
   (the reference makes two pages on a short first paragraph, and so do we, where we
   made one), and `\\*` refuses a page break after its line.
+- **The line straight after a list is not indented.** After an `itemize`,
+  `enumerate`, `description`, `center`, `quote`, `quotation` or `verse` with no
+  blank line before the text, the paragraph continues flush left, as in LaTeX; a
+  blank line indents it as usual. Measured against `tectonic`, that line used to
+  start one `\parindent` (14.94bp) in. The rule is `\@doendpe` from the 2021-11-15
+  kernel the reference runs, so a list closed inside `{…}` still leaves the next
+  line indented, as it does there. (v0.282.0)
 - **In the browser.** A self-contained `js/wasm` build renders real LaTeX classes
   client-side — no TeXLive, no server.
 
