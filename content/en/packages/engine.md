@@ -58,6 +58,38 @@ TeXLive and no server.
   start one `\parindent` (14.94bp) in. The rule is `\@doendpe` from the 2021-11-15
   kernel the reference runs, so a list closed inside `{…}` still leaves the next
   line indented, as it does there. (v0.282.0)
+- **Alignments, leaders and registers.** `\halign` copies its preamble
+  unexpanded and runs its entries **live**, as `tex.web` §782-791 does:
+  `\def\a{OLD}\halign{#\cr \def\a{NEW}\a\cr}` typesets `NEW`, where it used to
+  print `OLD`; IEEEtran's `{\ifnum0=`}\fi … \ifnum0=`{\fi}\cr` trick ends an entry
+  from inside a group, and `\halign\bgroup` opens an alignment. `\leaders`,
+  `\cleaders` and `\xleaders` are real primitives (box or rule tile; the aligned,
+  centred and expanded modes of §626-628) in the SVG and the PDF painter; vertical
+  leaders keep the glue's space and paint nothing. `\c@page` is a real count
+  register (`\count0`), so `\the\c@page`, `\advance\c@page` and `\ifodd\c@page` in
+  a header work. `\DeclareUnicodeCharacter` makes the character active, with a
+  sparse catcode table past 255. (v0.290.0–v0.291.0)
+- **Geometry.** `\restoregeometry` returns to the layout `\begin{document}`
+  found and, like `\newgeometry`, begins with a `\clearpage`; the `twocolumn` and
+  `onecolumn` keys set `\@twocolumn`; and when none of margin, body, margin is
+  fixed in a direction, `geometry`'s default body (0.7 of the paper, margins split
+  1:1 horizontally and 2:3 vertically) applies instead of 1in on every side. `a4`
+  is emulated rather than bundled (its licence allows distribution only with the
+  NTG classes); `a4wide` is bundled. ⚠ The page grid is one layout per run: pages
+  before a `\restoregeometry` take the restored height and margins. (v0.290.0–v0.291.0)
+- **Packages.** `eso-pic` draws `\AddToShipoutPicture` at the paper's lower-left
+  corner, behind or over the body, on every later page or (starred) on one;
+  `setspace` single-spaces floats and footnotes as `setspace.sty` does;
+  `titlesec` records `\titleformat` and `\titlespacing` instead of gobbling them;
+  `manyfoot`'s `\DeclareNewFootnote` declares its classes; `algorithm2e` keeps its
+  block commands and numbers lines under `linesnumbered`; `\tableofcontents`
+  honours `tocdepth`; `comment`'s `\specialcomment` declares an environment;
+  `xstring`'s `\IfInteger` and `\IfDecimal` pick one branch; and `-report-skipped`
+  names the packages that had no `.sty` to load. (v0.290.0–v0.291.0)
+- **Classes and fonts.** `elsarticle`'s front matter (`\ead`, `\journal`,
+  `\cortext`, `\fntext`, `\tnotetext`, `\address`, `\affiliation`, …) is placed by
+  `\maketitle` instead of leaking into the body, and `acmart` titles are Linux
+  Biolinum with `\texttt` in Inconsolata (`zi4`). (v0.291.0)
 - **In the browser.** A self-contained `js/wasm` build renders real LaTeX classes
   client-side — no TeXLive, no server.
 
