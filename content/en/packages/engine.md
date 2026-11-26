@@ -90,6 +90,32 @@ TeXLive and no server.
   `\cortext`, `\fntext`, `\tnotetext`, `\address`, `\affiliation`, …) is placed by
   `\maketitle` instead of leaking into the body, and `acmart` titles are Linux
   Biolinum with `\texttt` in Inconsolata (`zi4`). (v0.291.0)
+- **Font sizes and classes.** `\fontsize` and `\@setfontsize` read any TeX unit
+  (`pt`, `bp`, `mm`, `cm`, `in`, `pc`, `dd`, `cc`, `sp`; `em` and `ex` stay
+  refused), and a class that restates `\@setfontsize\normalsize{10bp}{12bp}` makes
+  that the body size, with the size table rebased on it. `\PassOptionsToClass` and
+  `\PassOptionsToPackage` expand their option argument, so elsarticle's `12pt`
+  reaches `article`. `authblk`'s `\author[marks]{name}` accumulates and `\affil` is
+  set in `\Affilfont`; `elsarticle`'s title-note marks are the class's star; the
+  sans bold, oblique and bold oblique of Latin Modern are bound. (v0.299.0–v0.300.0)
+- **Pages and geometry.** `\setcounter{page}{n}` and `\pagenumbering{style}` change
+  the printed folio (1 5 6 i ii 1 2 in the witness, as `tectonic` prints it).
+  `geometry` takes the options `\PassOptionsToPackage` queued for it, reads
+  `heightrounded=true|false`, and keeps a body when only one margin beside it is
+  set, so `\newgeometry{textheight=9in,top=1in,…}` keeps its 9in. `eso-pic`'s
+  `\AtText…` pictures use `\evensidemargin` on even pages of a `twoside` document.
+  (v0.299.0–v0.300.0)
+- **Mathematics.** `align` and `align*` follow amsmath for `\tag`: a tag that
+  cannot fit beside its row goes on its own line, flush right, instead of running
+  off the page, and a relation at the start of a right-aligned column has its
+  space (`x &\sim y`). `\text`, `\mbox`, `\hbox`, `\textrm` and `\textnormal` keep
+  their interword spaces (go-tex/math v0.51.0). ⚠ `flalign`, `alignat`, `eqnarray`
+  and `gather` keep their earlier tag rule, and `\text` does not yet inherit the
+  surrounding text font. (v0.299.0–v0.300.0)
+- **Measured on the corpus.** From v0.288.0 to v0.299.0, over 140 scored papers,
+  Σ|page deviation| from the reference goes from 258 to 219 and exact pagination
+  from 29 to 42 papers (32 papers moved toward the reference, 5 away, 1
+  sideways). Measured on v0.299.0; v0.300.0 is not measured yet.
 - **In the browser.** A self-contained `js/wasm` build renders real LaTeX classes
   client-side — no TeXLive, no server.
 
