@@ -116,6 +116,19 @@ TeXLive and no server.
   Σ|page deviation| from the reference goes from 258 to 219 and exact pagination
   from 29 to 42 papers (32 papers moved toward the reference, 5 away, 1
   sideways). Measured on v0.299.0; v0.300.0 is not measured yet.
+- **Tables and front matter.** `tabularray`'s `tblr`, `longtblr` and `talltblr` are
+  set: `colspec`, `width`, `hlines`, `vlines`, `rowhead`, `rowfoot` (or a bare
+  colspec, with a key=value spec keeping its cells), `caption=` and `label=`. A
+  table taller than a page is split row by row (`longtable` too), and a `longtblr`
+  repeats its `rowhead` rows on every page and ends all but the last page with the
+  "Continued on next page" foot. Styling commands are read and dropped;
+  `caption-lot`, `entry=` and the booktabs themes are not modelled. (v0.303.0,
+  #955) `titlesec`'s `explicit` option passes the title to `\titleformat` as `#1`.
+  (v0.302.0, #954) `elsarticle`'s `\cormark`, `\corref` and `\cortext` print the
+  class's `$\ast$`, `\textsuperscript` follows the current size, and `5p` is two
+  columns under a title block spanning both. (v0.301.0, #951, #953) Corpus:
+  Σ|page deviation| 245 → 239 from v0.302.0 to v0.303.0, with one paper,
+  2407.19892, from 28 to 31 pages (reference 34).
 - **In the browser.** A self-contained `js/wasm` build renders real LaTeX classes
   client-side — no TeXLive, no server.
 
